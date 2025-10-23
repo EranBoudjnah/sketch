@@ -305,7 +305,7 @@ fun RangeSlider(
         {
             Box(
                 modifier = Modifier
-                    .layoutId(RangeSliderComponents.STARTTHUMB)
+                    .layoutId(RangeSliderComponents.START_THUMB)
                     .wrapContentWidth()
                     .onSizeChanged { state.startThumbWidth = it.width.toFloat() }
             ) {
@@ -313,7 +313,7 @@ fun RangeSlider(
             }
             Box(
                 modifier = Modifier
-                    .layoutId(RangeSliderComponents.ENDTHUMB)
+                    .layoutId(RangeSliderComponents.END_THUMB)
                     .wrapContentWidth()
                     .onSizeChanged { state.endThumbWidth = it.width.toFloat() }
             ) {
@@ -328,12 +328,12 @@ fun RangeSlider(
     ) { measurables, constraints ->
         val startThumbPlaceable =
             measurables
-                .fastFirst { it.layoutId == RangeSliderComponents.STARTTHUMB }
+                .fastFirst { it.layoutId == RangeSliderComponents.START_THUMB }
                 .measure(constraints)
 
         val endThumbPlaceable =
             measurables
-                .fastFirst { it.layoutId == RangeSliderComponents.ENDTHUMB }
+                .fastFirst { it.layoutId == RangeSliderComponents.END_THUMB }
                 .measure(constraints)
 
         val trackPlaceable =
@@ -788,8 +788,8 @@ private enum class SliderComponents {
 }
 
 private enum class RangeSliderComponents {
-    ENDTHUMB,
-    STARTTHUMB,
+    END_THUMB,
+    START_THUMB,
     TRACK
 }
 
