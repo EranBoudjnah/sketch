@@ -33,6 +33,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -69,7 +70,7 @@ mavenPublishing {
     coordinates(
         groupId = "com.mitteloupe.sketch",
         artifactId = "sketch",
-        version = "0.1.0-SNAPSHOT"
+        version = "0.1.0"
     )
 
     pom {
@@ -99,4 +100,8 @@ mavenPublishing {
             developerConnection.set("scm:git:ssh://git@github.com/EranBoudjnah/sketch.git")
         }
     }
+}
+
+signing {
+    useGpgCmd()
 }
