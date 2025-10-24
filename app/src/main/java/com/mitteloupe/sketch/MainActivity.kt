@@ -272,7 +272,7 @@ fun Demo(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun DemoPreview() {
     SketchTheme {
         Demo(Modifier.wrapContentSize())
     }

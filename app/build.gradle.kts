@@ -15,14 +15,12 @@ kotlin {
 
 android {
     namespace = "com.mitteloupe.sketch"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.mitteloupe.sketch"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = "com.mitteloupe.sketch.demo"
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

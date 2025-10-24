@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.maven.publish)
 }
 
 kotlin {
@@ -15,10 +16,10 @@ kotlin {
 
 android {
     namespace = "com.mitteloupe.sketch"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.minSdk.get().toInt()
 
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -57,4 +58,45 @@ dependencies {
 
 ktlint {
     android = true
+}
+
+ext {
+    set("PUBLISH_ARTIFACT_ID", "sketch")
+    set("PUBLISH_VERSION", "0.1.0")
+}
+
+mavenPublishing {
+    coordinates(
+        groupId = "com.mitteloupe.sketch",
+        artifactId = "sketch",
+        version = "0.1.0-SNAPSHOT"
+    )
+
+    pom {
+        name.set("Sketch")
+        description.set(
+            "A Jetpack Compose library providing sketch-style versions of common Material 3 UI components."
+        )
+        inceptionYear.set("2025")
+        url.set("https://github.com/EranBoudjnah/sketch/")
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://mit-license.org")
+                distribution.set("https://mit-license.org")
+            }
+        }
+        developers {
+            developer {
+                id.set("EranB")
+                name.set("Eran Boudjnah")
+                url.set("https://github.com/EranBoudjnah/")
+            }
+        }
+        scm {
+            url.set("https://github.com/EranBoudjnah/sketch/")
+            connection.set("scm:git:git://github.com/EranBoudjnah/sketch.git")
+            developerConnection.set("scm:git:ssh://git@github.com/EranBoudjnah/sketch.git")
+        }
+    }
 }
