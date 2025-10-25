@@ -1,0 +1,29 @@
+name: Build and Verify Sketch Publication
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Publish sketch to local Maven
+        run: ./gradlew :sketch:publishToMavenLocal
+
+      - name: Build app using published sketch
+        run: ./gradlew :app:assembleDebug
