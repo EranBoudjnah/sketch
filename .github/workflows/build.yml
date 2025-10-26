@@ -33,6 +33,16 @@ jobs:
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
           gpgconf --kill gpg-agent
 
+      - name: Debug secrets
+        run: |
+          echo "Home: $HOME"
+          echo "Contents of .gnupg:"
+          ls -la ~/.gnupg
+          echo "GPG_PASSPHRASE length: ${#GPG_PASSPHRASE}"
+        shell: bash
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Get and trust GPG key ID
         id: gpg
         run: |
