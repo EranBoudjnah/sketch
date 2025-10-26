@@ -48,9 +48,9 @@ jobs:
           ORG_GRADLE_PROJECT_signing.gnupg.keyName: ${{ steps.gpg.outputs.key_id }}
           ORG_GRADLE_PROJECT_signing.gnupg.passphrase: ${{ secrets.GPG_PASSPHRASE }}
           ORG_GRADLE_PROJECT_signing.gnupg.executable: gpg
+          ORG_GRADLE_PROJECT_signing.gnupg.useLoopbackPinentry: true
         run: ./gradlew :sketch:publishToMavenLocal
 
       - name: Build app using published sketch
         run: |
-          ./gradlew :sketch:publishToMavenLocal \
-          -Dorg.gradle.jvmargs="-Dorg.gradle.signing.gnupg.useLoopbackPinentry=true"
+          ./gradlew :sketch:publishToMavenLocal
