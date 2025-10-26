@@ -57,6 +57,7 @@ jobs:
           ORG_GRADLE_PROJECT_signing.gnupg.executable: gpg
           ORG_GRADLE_PROJECT_signing.gnupg.useLoopbackPinentry: true
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          KEY_ID: ${{ steps.gpg.outputs.key_id }}
         run: |
           ./gradlew :sketch:publishToMavenLocal \
           -Psigning.gnupg.useLoopbackPinentry=true \
