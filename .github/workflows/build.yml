@@ -37,13 +37,11 @@ jobs:
 
       - name: Publish sketch to local Maven
         env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: ./gradlew -Psigning.gnupg.keyName="$GPG_PRIVATE_KEY" \
-          -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" \
-          -Psigning.gnupg.executable=gpg \
-          -Psigning.gnupg.useLoopbackPinentry=true \
-          :sketch:publishToMavenLocal
+          ORG_GRADLE_PROJECT_signing.gnupg.keyName: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signing.gnupg.passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_signing.gnupg.executable: gpg
+          ORG_GRADLE_PROJECT_signing.gnupg.useLoopbackPinentry: true
+        run: ./gradlew :sketch:publishToMavenLocal
 
       - name: Build app using published sketch
         run: ./gradlew :app:assembleDebug
