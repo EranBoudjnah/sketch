@@ -36,8 +36,8 @@ jobs:
       - name: Get and trust GPG key ID
         id: gpg
         run: |
-          KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F: '/^sec:/ {print $5}')
-          echo "$KEY_ID:6:" | gpg --import-ownertrust
+          KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr:/ {print $10}')
+          echo "KEY_ID:6:" | gpg --import-ownertrust
           echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle
