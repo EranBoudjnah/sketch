@@ -43,6 +43,8 @@ jobs:
             echo "Error: GPG key import failed or key ID not found."
             exit 1
           fi
+          echo "test" > dummy.txt
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" -u "$KEY_ID" -o dummy.txt.sig -s dummy.txt
           echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle
