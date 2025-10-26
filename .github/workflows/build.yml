@@ -23,7 +23,6 @@ jobs:
       - name: Install GPG
         run: |
           sudo apt-get update && sudo apt-get install -y gnupg
-          export GPG_TTY=$(tty)
 
       - name: Import GPG key
         env:
@@ -37,7 +36,14 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Publish sketch to local Maven
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: ./gradlew :sketch:publishToMavenLocal
+          -Psigning.gnupg.keyName="$GPG_PRIVATE_KEY" \
+          -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" \
+          -Psigning.gnupg.executable=gpg \
+          -Psigning.gnupg.useLoopbackPinentry=true
 
       - name: Build app using published sketch
         run: ./gradlew :app:assembleDebug
