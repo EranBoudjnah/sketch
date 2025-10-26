@@ -49,7 +49,11 @@ jobs:
           ORG_GRADLE_PROJECT_signing.gnupg.passphrase: ${{ secrets.GPG_PASSPHRASE }}
           ORG_GRADLE_PROJECT_signing.gnupg.executable: gpg
           ORG_GRADLE_PROJECT_signing.gnupg.useLoopbackPinentry: true
-        run: ./gradlew :sketch:publishToMavenLocal
+        run: |
+          ./gradlew :sketch:publishToMavenLocal \
+          -Psigning.gnupg.useLoopbackPinentry=true \
+          -Psigning.gnupg.keyName=$KEY_ID \
+          -Psigning.gnupg.passphrase=$GPG_PASSPHRASE
 
       - name: Build app using published sketch
         run: |
