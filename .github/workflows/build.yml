@@ -37,7 +37,7 @@ jobs:
         id: gpg
         run: |
           KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr:/ {print $10}')
-          printf "KEY_ID:6:" | gpg --import-ownertrust
+          printf "%s:6:\n" "$KEY_ID" | gpg --import-ownertrust
           echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle
