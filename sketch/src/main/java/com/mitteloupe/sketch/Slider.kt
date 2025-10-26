@@ -24,7 +24,6 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SliderDefaults.TickSize
 import androidx.compose.material3.SliderDefaults.TrackStopIndicatorSize
 import androidx.compose.material3.SliderState
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -49,6 +48,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.LayoutDirection
@@ -322,7 +322,7 @@ fun RangeSlider(
             Box(modifier = Modifier.layoutId(RangeSliderComponents.TRACK)) { track(state) }
         },
         modifier = modifier
-            .minimumInteractiveComponentSize()
+            .size(0.dp)
             .requiredSizeIn(minWidth = ThumbWidth, minHeight = TrackHeight)
             .alpha(0f)
     ) { measurables, constraints ->
@@ -834,4 +834,12 @@ data class SketchRangeSliderState(val rangeSliderState: RangeSliderState) {
     var startThumbWidth: Float by mutableFloatStateOf(0f)
     var endThumbWidth: Float by mutableFloatStateOf(0f)
     var trackHeight: Float by mutableFloatStateOf(0f)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun PreviewRangeSlider() {
+    val rangeSliderState by remember { mutableStateOf(SketchRangeSliderState()) }
+    RangeSlider(state = rangeSliderState)
 }
