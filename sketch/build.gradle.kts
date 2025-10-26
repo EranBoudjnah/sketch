@@ -103,5 +103,20 @@ mavenPublishing {
 }
 
 signing {
-    useGpgCmd()
+    val hasEnvKeys =
+        System.getenv("GPG_PRIVATE_KEY")?.isNotEmpty() == true &&
+            System.getenv("GPG_PASSPHRASE")?.isNotEmpty() == true
+
+    if (hasEnvKeys) {
+        println("🔐 Using in-memory PGP key for CI signing")
+        useInMemoryPgpKeys(
+            System.getenv("GPG_PRIVATE_KEY"),
+            System.getenv("GPG_PASSPHRASE")
+        )
+    } else if (project.hasProperty("signing.gnupg.key")) {
+        println("💻 Using local Gradle properties signing config")
+        useGpgCmd()
+    } else {
+        println("⚠️ No signing credentials found; skipping signing.")
+    }
 }
