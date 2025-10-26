@@ -36,6 +36,7 @@ jobs:
         id: gpg
         run: |
           KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F: '/^sec:/ {print $5}')
+          gpg --batch --yes --edit-key $KEY_ID trust quit
           echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle
@@ -50,6 +51,4 @@ jobs:
         run: ./gradlew :sketch:publishToMavenLocal
 
       - name: Build app using published sketch
-        run: |
-          export GPG_TTY=$(tty)
-          ./gradlew :app:assembleDebug
+        run: ./gradlew :app:assembleDebug
