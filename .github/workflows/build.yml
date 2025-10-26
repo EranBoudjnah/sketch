@@ -39,11 +39,11 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: ./gradlew :sketch:publishToMavenLocal
-          -Psigning.gnupg.keyName="$GPG_PRIVATE_KEY" \
+        run: ./gradlew -Psigning.gnupg.keyName="$GPG_PRIVATE_KEY" \
           -Psigning.gnupg.passphrase="$GPG_PASSPHRASE" \
           -Psigning.gnupg.executable=gpg \
-          -Psigning.gnupg.useLoopbackPinentry=true
+          -Psigning.gnupg.useLoopbackPinentry=true \
+          :sketch:publishToMavenLocal
 
       - name: Build app using published sketch
         run: ./gradlew :app:assembleDebug
