@@ -33,15 +33,6 @@ jobs:
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
           gpgconf --kill gpg-agent
 
-      - name: Debug secrets
-        run: |
-          echo "Home: $HOME"
-          echo "Contents of .gnupg:"
-          ls -la ~/.gnupg
-          echo "GPG_PASSPHRASE length: ${#GPG_PASSPHRASE}"
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
       - name: Get and trust GPG key ID
         id: gpg
         env:
@@ -54,9 +45,6 @@ jobs:
             echo "Error: GPG key import failed or key ID not found."
             exit 1
           fi
-          echo "test" > dummy.txt
-          echo "GPG_PASSPHRASE length: ${#GPG_PASSPHRASE}"
-          gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" -u "$KEY_ID" -o dummy.txt.sig -s dummy.txt
           echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle
@@ -68,6 +56,7 @@ jobs:
           ORG_GRADLE_PROJECT_signing.gnupg.passphrase: ${{ secrets.GPG_PASSPHRASE }}
           ORG_GRADLE_PROJECT_signing.gnupg.executable: gpg
           ORG_GRADLE_PROJECT_signing.gnupg.useLoopbackPinentry: true
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           ./gradlew :sketch:publishToMavenLocal \
           -Psigning.gnupg.useLoopbackPinentry=true \
@@ -75,5 +64,4 @@ jobs:
           -Psigning.gnupg.passphrase=$GPG_PASSPHRASE
 
       - name: Build app using published sketch
-        run: |
-          ./gradlew :sketch:publishToMavenLocal
+        run: ./gradlew :sketch:publishToMavenLocal
