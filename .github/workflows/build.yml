@@ -8,8 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Test
 
-    steps:
+  steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
