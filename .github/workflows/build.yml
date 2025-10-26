@@ -30,14 +30,21 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          echo "default-key $(gpg --list-secret-keys --keyid-format=long | grep sec | head -n1 | awk '{print $2}' | cut -d'/' -f2)" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+
+      - name: Get GPG key ID
+        id: gpg
+        run: |
+          KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
+          echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
 
       - name: Publish sketch to local Maven
         env:
-          ORG_GRADLE_PROJECT_signing.gnupg.keyName: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signing.gnupg.keyName: ${{ steps.gpg.outputs.key_id }}
           ORG_GRADLE_PROJECT_signing.gnupg.passphrase: ${{ secrets.GPG_PASSPHRASE }}
           ORG_GRADLE_PROJECT_signing.gnupg.executable: gpg
           ORG_GRADLE_PROJECT_signing.gnupg.useLoopbackPinentry: true
