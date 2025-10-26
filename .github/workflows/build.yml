@@ -35,7 +35,7 @@ jobs:
       - name: Get GPG key ID
         id: gpg
         run: |
-          KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
+          KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F: '/^sec:/ {print $5}')
           echo "key_id=$KEY_ID" >> $GITHUB_OUTPUT
 
       - name: Set up Gradle
@@ -50,4 +50,6 @@ jobs:
         run: ./gradlew :sketch:publishToMavenLocal
 
       - name: Build app using published sketch
-        run: ./gradlew :app:assembleDebug
+        run: |
+          export GPG_TTY=$(tty)
+          ./gradlew :app:assembleDebug
