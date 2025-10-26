@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,6 +41,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mitteloupe.sketch.ui.theme.SketchTheme
@@ -56,10 +58,14 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(
                         modifier = Modifier
-                            .padding(innerPadding)
-                            .verticalScroll(rememberScrollState())
+                            .fillMaxSize()
                     ) {
-                        Demo()
+                        Demo(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(innerPadding)
+                        )
                     }
                 }
             }
@@ -71,12 +77,19 @@ class MainActivity : ComponentActivity() {
 fun Demo(modifier: Modifier = Modifier) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
 
-    Row(modifier = modifier) {
-        VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(16.dp)
-        )
+    var height by remember { mutableIntStateOf(100) }
+
+    Row(
+        modifier = modifier
+            .onSizeChanged { height = it.height }
+    ) {
+        with(LocalDensity.current) {
+            VerticalDivider(
+                modifier = Modifier
+                    .height(height.toDp())
+                    .width(16.dp)
+            )
+        }
 
         val cardShape by remember {
             mutableStateOf(
@@ -84,18 +97,21 @@ fun Demo(modifier: Modifier = Modifier) {
             )
         }
         Card(
-            shape = cardShape,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .background(MaterialTheme.colorScheme.surface, cardShape)
         ) {
             Column(
                 modifier = Modifier
                     .padding(16.dp)
                     .wrapContentHeight()
             ) {
-                Text("Hello Android!")
+                Text(
+                    style = MaterialTheme.typography.titleLarge,
+                    text = "Sketch Toolkit"
+                )
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,11 +121,11 @@ fun Demo(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    var text by remember { mutableStateOf("Text") }
+                    var text by remember { mutableStateOf("") }
                     val seed by remember(text) { mutableIntStateOf(Random.nextInt()) }
                     TextField(
                         value = text,
-                        label = { Text("Label") },
+                        label = { Text("TextField example") },
                         onValueChange = { text = it },
                         modifier = Modifier.weight(1f),
                         seed = seed
@@ -122,7 +138,7 @@ fun Demo(modifier: Modifier = Modifier) {
                             .height(48.dp),
                         onClick = {}
                     ) {
-                        Text("Hi!")
+                        Text("Capsule Button")
                     }
                 }
                 Spacer(modifier = Modifier.size(8.dp))
@@ -141,7 +157,7 @@ fun Demo(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .padding(end = 8.dp)
                 ) {
-                    Text("Hi!")
+                    Text("Sketchy And Outlined Button")
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     var checkboxChecked: Boolean by remember { mutableStateOf(false) }
@@ -153,7 +169,7 @@ fun Demo(modifier: Modifier = Modifier) {
                         onCheckedChange = { checkboxChecked = it },
                         seed = checkboxSeed
                     )
-                    Text("Check!")
+                    Text("A sketchy Checkbox")
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     var radioChecked: Boolean by remember { mutableStateOf(false) }
@@ -163,17 +179,26 @@ fun Demo(modifier: Modifier = Modifier) {
                         onClick = { radioChecked = !radioChecked },
                         seed = radioSeed
                     )
-                    Text("Radio!")
+                    Text("A sketchy RadioButton")
                 }
-                var switchChecked: Boolean by remember { mutableStateOf(false) }
-                val switchSeed by remember(switchChecked) { mutableIntStateOf(Random.nextInt()) }
-                Switch(
-                    checked = switchChecked,
-                    onCheckedChange = { switchChecked = it },
-                    randomSeed = switchSeed
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    var switchChecked: Boolean by remember { mutableStateOf(false) }
+                    val switchSeed by remember(switchChecked) {
+                        mutableIntStateOf(Random.nextInt())
+                    }
+                    Switch(
+                        checked = switchChecked,
+                        onCheckedChange = { switchChecked = it },
+                        randomSeed = switchSeed
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text("A sketchy Switch")
+                }
                 val interactionSource: MutableInteractionSource =
                     remember { MutableInteractionSource() }
+
+                Spacer(modifier = Modifier.size(8.dp))
+                Text("A sketchy Slider")
 
                 @OptIn(ExperimentalMaterial3Api::class)
                 val sliderState = remember {
@@ -189,14 +214,19 @@ fun Demo(modifier: Modifier = Modifier) {
                     interactionSource = interactionSource,
                     randomSeed = 0
                 )
+
+                Spacer(modifier = Modifier.size(8.dp))
+                Text("A sketchy RangeSlider")
+
                 @OptIn(ExperimentalMaterial3Api::class)
                 val rangeSliderState = remember {
                     SketchRangeSliderState()
                 }
                 @OptIn(ExperimentalMaterial3Api::class)
                 RangeSlider(state = rangeSliderState)
-                Spacer(modifier = Modifier.size(8.dp))
+                Spacer(modifier = Modifier.size(16.dp))
 
+                Text("Sketchy ProgressIndicator and CircularProgressIndicator")
                 var progressRandomSeed by remember { mutableIntStateOf(0) }
                 LaunchedEffect(Unit) {
                     while (true) {
@@ -228,13 +258,13 @@ fun Demo(modifier: Modifier = Modifier) {
                         )
                     }
                 }
-                Spacer(modifier = Modifier.size(8.dp))
+                Spacer(modifier = Modifier.size(16.dp))
                 ElevatedButton(
                     onClick = { showDialog = true },
                     shape = SketchRectangleShape(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Open Dialog")
+                    Text("Open Sketchy Dialog")
                 }
             }
         }
