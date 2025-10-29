@@ -2,7 +2,7 @@
 
 # Sketch ✏️
 
-<video src="./assets/recording.mp4" alt="Preview" align="right"></video>
+![Preview](./assets/recording.mp4)
 
 A Jetpack Compose UI library of components with a hand-drawn, sketch-style appearance.
 
