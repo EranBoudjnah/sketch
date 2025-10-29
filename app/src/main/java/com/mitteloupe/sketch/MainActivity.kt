@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -56,6 +60,11 @@ import androidx.compose.ui.unit.dp
 import com.mitteloupe.sketch.ui.theme.SketchTheme
 import kotlin.random.Random
 import kotlinx.coroutines.delay
+
+private const val TAB_INDEX_INPUTS = 0
+private const val TAB_INDEX_BUTTONS = 1
+private const val TAB_INDEX_TOGGLES = 2
+private const val TAB_INDEX_RANGES = 3
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +94,22 @@ class MainActivity : ComponentActivity() {
 fun Demo(modifier: Modifier = Modifier) {
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.statusBars.union(WindowInsets.displayCutout))
+    ) {
+        Text(
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            text = "Sketch Toolkit",
+            modifier = Modifier.padding(8.dp)
+        )
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(16.dp)
+        )
         PrimaryTabRow(
             indicator = {
                 TabRowDefaults.PrimaryIndicator(
@@ -97,9 +121,7 @@ fun Demo(modifier: Modifier = Modifier) {
                     shape = SketchRectangleShape()
                 )
             },
-            selectedTabIndex = selectedTabIndex,
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.statusBars.union(WindowInsets.displayCutout))
+            selectedTabIndex = selectedTabIndex
         ) {
             listOf("Input", "Buttons", "Toggles", "Range").forEachIndexed { index, destination ->
                 Tab(
@@ -152,168 +174,47 @@ fun Demo(modifier: Modifier = Modifier) {
                         .padding(16.dp)
                         .wrapContentHeight()
                 ) {
-                    Text(
-                        style = MaterialTheme.typography.titleLarge,
-                        text = "Sketch Toolkit"
-                    )
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(16.dp)
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
+                    AnimatedVisibility(
+                        visible = selectedTabIndex == TAB_INDEX_INPUTS,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
                     ) {
-                        var text by remember { mutableStateOf("") }
-                        val seed by remember(text) { mutableIntStateOf(Random.nextInt()) }
-                        TextField(
-                            value = text,
-                            label = { Text("TextField example") },
-                            onValueChange = { text = it },
-                            modifier = Modifier.weight(1f),
-                            seed = seed
-                        )
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Button(
-                            shape = SketchCapsuleShape(),
-                            modifier = Modifier
-                                .defaultMinSize(minWidth = 96.dp)
-                                .height(48.dp),
-                            onClick = {}
-                        ) {
-                            Text("Capsule Button")
-                        }
+                        InputExamples()
                     }
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Button(
-                        onClick = {},
-                        shape = SketchRectangleShape(),
-                        modifier = Modifier.fillMaxWidth()
+                    AnimatedVisibility(
+                        visible = selectedTabIndex == TAB_INDEX_BUTTONS,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
                     ) {
-                        Text("Sketchy Button")
+                        ButtonExamples()
                     }
-                    val outlinedButtonShape by remember { mutableStateOf(SketchRectangleShape()) }
-                    OutlinedButton(
-                        onClick = {},
-                        shape = outlinedButtonShape,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 8.dp)
+                    AnimatedVisibility(
+                        visible = selectedTabIndex == TAB_INDEX_TOGGLES,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
                     ) {
-                        Text("Sketchy And Outlined Button")
+                        ToggleExamples()
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        var checkboxChecked: Boolean by remember { mutableStateOf(false) }
-                        val checkboxSeed by remember(checkboxChecked) {
-                            mutableIntStateOf(Random.nextInt())
-                        }
-                        Checkbox(
-                            checked = checkboxChecked,
-                            onCheckedChange = { checkboxChecked = it },
-                            seed = checkboxSeed
-                        )
-                        Text("A sketchy Checkbox")
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        var radioChecked: Boolean by remember { mutableStateOf(false) }
-                        val radioSeed by remember(radioChecked) {
-                            mutableIntStateOf(Random.nextInt())
-                        }
-                        RadioButton(
-                            selected = radioChecked,
-                            onClick = { radioChecked = !radioChecked },
-                            seed = radioSeed
-                        )
-                        Text("A sketchy RadioButton")
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        var switchChecked: Boolean by remember { mutableStateOf(false) }
-                        val switchSeed by remember(switchChecked) {
-                            mutableIntStateOf(Random.nextInt())
-                        }
-                        Switch(
-                            checked = switchChecked,
-                            onCheckedChange = { switchChecked = it },
-                            randomSeed = switchSeed
-                        )
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Text("A sketchy Switch")
-                    }
-                    val interactionSource: MutableInteractionSource =
-                        remember { MutableInteractionSource() }
-
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Text("A sketchy Slider")
-
-                    @OptIn(ExperimentalMaterial3Api::class)
-                    val sliderState = remember {
-                        SketchSliderState(
-                            valueRange = 0f..100f,
-                            onValueChangeFinished = {}
-                        )
-                    }
-                    @OptIn(ExperimentalMaterial3Api::class)
-                    Slider(
-                        state = sliderState,
-                        modifier = Modifier.fillMaxWidth(),
-                        interactionSource = interactionSource,
-                        randomSeed = 0
-                    )
-
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Text("A sketchy RangeSlider")
-
-                    @OptIn(ExperimentalMaterial3Api::class)
-                    val rangeSliderState = remember {
-                        SketchRangeSliderState()
-                    }
-                    @OptIn(ExperimentalMaterial3Api::class)
-                    RangeSlider(state = rangeSliderState)
-                    Spacer(modifier = Modifier.size(16.dp))
-
-                    Text("Sketchy ProgressIndicator and CircularProgressIndicator")
-                    var progressRandomSeed by remember { mutableIntStateOf(0) }
-                    LaunchedEffect(Unit) {
-                        while (true) {
-                            progressRandomSeed = Random.nextInt()
-                            delay(125)
-                        }
-                    }
-                    var progress by remember { mutableFloatStateOf(.5f) }
-                    LaunchedEffect(Unit) {
-                        while (true) {
-                            progress = (progress + .05f) % 1.5f
-                            delay(100)
-                        }
-                    }
-                    Row {
-                        CircularProgressIndicator(randomSeed = progressRandomSeed)
-                        Spacer(modifier = Modifier.size(8.dp))
-                        CircularProgressIndicator(
-                            progress = { progress },
-                            randomSeed = progressRandomSeed
-                        )
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Column {
-                            LinearProgressIndicator(randomSeed = progressRandomSeed)
-                            Spacer(modifier = Modifier.size(8.dp))
-                            LinearProgressIndicator(
-                                progress = { progress },
-                                randomSeed = progressRandomSeed
-                            )
-                        }
+                    AnimatedVisibility(
+                        visible = selectedTabIndex == TAB_INDEX_RANGES,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        RangeExamples()
                     }
                     Spacer(modifier = Modifier.size(16.dp))
-                    ElevatedButton(
-                        onClick = { showDialog = true },
-                        shape = SketchRectangleShape(),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Open Sketchy Dialog")
-                    }
                 }
             }
+        }
+
+        ElevatedButton(
+            onClick = { showDialog = true },
+            shape = SketchRectangleShape(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text("Open Sketchy Dialog")
         }
 
         if (showDialog) {
@@ -343,6 +244,169 @@ fun Demo(modifier: Modifier = Modifier) {
                         Text("Close")
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InputExamples() {
+    var text by remember { mutableStateOf("") }
+    val seed by remember(text) { mutableIntStateOf(Random.nextInt()) }
+    TextField(
+        value = text,
+        label = { Text("TextField example") },
+        onValueChange = { text = it },
+        seed = seed
+    )
+}
+
+@Composable
+private fun ButtonExamples() {
+    Column {
+        Button(
+            shape = SketchCapsuleShape(),
+            modifier = Modifier
+                .defaultMinSize(minWidth = 96.dp)
+                .height(48.dp),
+            onClick = {}
+        ) {
+            Text("Capsule Button")
+        }
+        Spacer(modifier = Modifier.size(8.dp))
+        Button(
+            onClick = {},
+            shape = SketchRectangleShape(),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Sketchy Button")
+        }
+        Spacer(modifier = Modifier.size(8.dp))
+        val outlinedButtonShape by remember {
+            mutableStateOf(
+                SketchRectangleShape()
+            )
+        }
+        OutlinedButton(
+            onClick = {},
+            shape = outlinedButtonShape,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 8.dp)
+        ) {
+            Text("Sketchy And Outlined Button")
+        }
+    }
+}
+
+@Composable
+private fun ToggleExamples() {
+    Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            var checkboxChecked: Boolean by remember { mutableStateOf(false) }
+            val checkboxSeed by remember(checkboxChecked) {
+                mutableIntStateOf(Random.nextInt())
+            }
+            Checkbox(
+                checked = checkboxChecked,
+                onCheckedChange = { checkboxChecked = it },
+                seed = checkboxSeed
+            )
+            Text("A sketchy Checkbox")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            var radioChecked: Boolean by remember { mutableStateOf(false) }
+            val radioSeed by remember(radioChecked) {
+                mutableIntStateOf(Random.nextInt())
+            }
+            RadioButton(
+                selected = radioChecked,
+                onClick = { radioChecked = !radioChecked },
+                seed = radioSeed
+            )
+            Text("A sketchy RadioButton")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            var switchChecked: Boolean by remember { mutableStateOf(false) }
+            val switchSeed by remember(switchChecked) {
+                mutableIntStateOf(Random.nextInt())
+            }
+            Switch(
+                checked = switchChecked,
+                onCheckedChange = { switchChecked = it },
+                randomSeed = switchSeed
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text("A sketchy Switch")
+        }
+    }
+}
+
+@Composable
+private fun RangeExamples() {
+    Column {
+        val interactionSource: MutableInteractionSource =
+            remember { MutableInteractionSource() }
+
+        Spacer(modifier = Modifier.size(8.dp))
+        Text("A sketchy Slider")
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        val sliderState = remember {
+            SketchSliderState(
+                valueRange = 0f..100f,
+                onValueChangeFinished = {}
+            )
+        }
+        @OptIn(ExperimentalMaterial3Api::class)
+        Slider(
+            state = sliderState,
+            modifier = Modifier.fillMaxWidth(),
+            interactionSource = interactionSource,
+            randomSeed = 0
+        )
+
+        Spacer(modifier = Modifier.size(8.dp))
+        Text("A sketchy RangeSlider")
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        val rangeSliderState = remember {
+            SketchRangeSliderState()
+        }
+        @OptIn(ExperimentalMaterial3Api::class)
+        RangeSlider(state = rangeSliderState)
+        Spacer(modifier = Modifier.size(16.dp))
+
+        Text("Sketchy ProgressIndicator and CircularProgressIndicator")
+        var progressRandomSeed by remember { mutableIntStateOf(0) }
+        LaunchedEffect(Unit) {
+            while (true) {
+                progressRandomSeed = Random.nextInt()
+                delay(125)
+            }
+        }
+        var progress by remember { mutableFloatStateOf(.5f) }
+        LaunchedEffect(Unit) {
+            while (true) {
+                progress = (progress + .05f) % 1.5f
+                delay(100)
+            }
+        }
+        Row {
+            CircularProgressIndicator(randomSeed = progressRandomSeed)
+            Spacer(modifier = Modifier.size(8.dp))
+            CircularProgressIndicator(
+                progress = { progress },
+                randomSeed = progressRandomSeed
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Column {
+                LinearProgressIndicator(randomSeed = progressRandomSeed)
+                Spacer(modifier = Modifier.size(8.dp))
+                LinearProgressIndicator(
+                    progress = { progress },
+                    randomSeed = progressRandomSeed
+                )
             }
         }
     }
