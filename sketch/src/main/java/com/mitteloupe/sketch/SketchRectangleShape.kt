@@ -4,12 +4,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import kotlin.random.Random
 
-class SketchRectangleShape(private val randomSeed: Int = 0) : Shape {
+class SketchRectangleShape(private val randomSeed: Int = 0) : SketchShape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
@@ -30,4 +31,6 @@ class SketchRectangleShape(private val randomSeed: Int = 0) : Shape {
         }
         return Outline.Generic(path)
     }
+
+    override fun simplifiedShape(): Shape = RectangleShape
 }

@@ -97,7 +97,7 @@ fun TextField(
     val random by remember(seed) {
         mutableStateOf(Random(seed))
     }
-    val shape = shape ?: SketchRoundRectangleShape(CornerSize(4.dp), seed).top()
+    val shape = shape ?: SketchRoundedCornerShape(CornerSize(4.dp), seed).top()
     CompositionLocalProvider(LocalTextSelectionColors provides colors.textSelectionColors) {
         BasicTextField(
             value = value,

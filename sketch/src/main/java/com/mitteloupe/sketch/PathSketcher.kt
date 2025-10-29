@@ -3,6 +3,7 @@ package com.mitteloupe.sketch
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastCoerceAtMost
 import androidx.compose.ui.util.fastCoerceIn
 import java.lang.Math.toRadians
 import kotlin.math.abs
@@ -73,7 +74,11 @@ internal fun Path.sketchedLine(
         val lateralOffsetMagnitude =
             (accumulatedAngle / maximumDeviation) * maximumLateralOffsetPixel
 
-        val offsetPoint = basePoint + baseDirectionNormal * lateralOffsetMagnitude.toFloat()
+        val easeAtEdges = minOf(segmentIndex - 1, numSegments - 1 - segmentIndex)
+            .fastCoerceAtMost(5).toFloat() / 5f
+
+        val offsetPoint =
+            basePoint + baseDirectionNormal * easeAtEdges * lateralOffsetMagnitude.toFloat()
 
         lineTo(offsetPoint.x, offsetPoint.y)
     }
@@ -309,7 +314,8 @@ internal fun Path.sketchedRoundRectangle(
         moveTo(right, top)
     }
 
-    if (height > topRightCornerRadius + bottomRightCornerRadius) {
+    val hasRightEdge = height > topRightCornerRadius + bottomRightCornerRadius
+    if (hasRightEdge) {
         sketchedLine(
             random,
             Offset(right, top + topRightCornerRadius),
@@ -333,9 +339,12 @@ internal fun Path.sketchedRoundRectangle(
             stepDegrees = stepDegrees,
             startWithMove = false
         )
+    } else if (!hasRightEdge) {
+        lineTo(right - bottomRightCornerRadius, bottom)
     }
 
-    if (width > bottomLeftCornerRadius + bottomRightCornerRadius) {
+    val hasBottomEdge = width > bottomLeftCornerRadius + bottomRightCornerRadius
+    if (hasBottomEdge) {
         sketchedLine(
             random,
             Offset(right - bottomRightCornerRadius, bottom),
@@ -359,9 +368,12 @@ internal fun Path.sketchedRoundRectangle(
             stepDegrees = stepDegrees,
             startWithMove = false
         )
+    } else if (!hasBottomEdge) {
+        lineTo(left, bottom)
     }
 
-    if (height > topLeftCornerRadius + bottomLeftCornerRadius) {
+    val hasLeftEdge = height > topLeftCornerRadius + bottomLeftCornerRadius
+    if (hasLeftEdge) {
         sketchedLine(
             random,
             Offset(left, bottom - bottomLeftCornerRadius),
@@ -384,9 +396,12 @@ internal fun Path.sketchedRoundRectangle(
             stepDegrees = stepDegrees,
             startWithMove = false
         )
+    } else if (!hasLeftEdge) {
+        lineTo(left + topLeftCornerRadius, top)
     }
 
-    if (width > topLeftCornerRadius + topRightCornerRadius) {
+    val hasTopEdge = width > topLeftCornerRadius + topRightCornerRadius
+    if (hasTopEdge) {
         sketchedLine(
             random,
             Offset(left + topLeftCornerRadius, top),

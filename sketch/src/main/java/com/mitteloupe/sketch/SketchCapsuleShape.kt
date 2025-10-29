@@ -1,5 +1,6 @@
 package com.mitteloupe.sketch
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
@@ -9,7 +10,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import kotlin.random.Random
 
-class SketchCapsuleShape(private val randomSeed: Int = 0) : Shape {
+class SketchCapsuleShape(private val randomSeed: Int = 0) : SketchShape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
@@ -30,4 +31,6 @@ class SketchCapsuleShape(private val randomSeed: Int = 0) : Shape {
         }
         return Outline.Generic(path)
     }
+
+    override fun simplifiedShape(): Shape = RoundedCornerShape(100)
 }
