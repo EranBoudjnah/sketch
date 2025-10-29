@@ -70,7 +70,7 @@ mavenPublishing {
     coordinates(
         groupId = "com.mitteloupe.sketch",
         artifactId = "sketch",
-        version = "0.1.0"
+        version = libs.versions.sketch.get()
     )
 
     pom {

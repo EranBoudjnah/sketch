@@ -20,7 +20,7 @@ fun SketchDialog(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     properties: DialogProperties = DialogProperties(),
-    shape: Shape = SketchRoundRectangleShape(CornerSize(8.dp)),
+    shape: Shape = SketchRoundedCornerShape(CornerSize(8.dp)),
     borderSize: Dp = 2.dp,
     content: @Composable () -> Unit
 ) {

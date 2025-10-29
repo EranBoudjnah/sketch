@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import kotlin.random.Random
 
-class SketchVerticalLineShape(private val randomSeed: Int = 0) : Shape {
+class SketchVerticalLineShape(private val randomSeed: Int = 0) : SketchShape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
@@ -29,5 +29,21 @@ class SketchVerticalLineShape(private val randomSeed: Int = 0) : Shape {
             }
         }
         return Outline.Generic(path)
+    }
+
+    override fun simplifiedShape(): Shape = object : Shape {
+        override fun createOutline(
+            size: Size,
+            layoutDirection: LayoutDirection,
+            density: Density
+        ): Outline {
+            val path = Path().apply {
+                val pointA = Offset(size.width / 2f, 0f)
+                val pointB = Offset(size.width / 2f, size.height)
+                moveTo(pointA.x, pointA.y)
+                lineTo(pointB.x, pointB.y)
+            }
+            return Outline.Generic(path)
+        }
     }
 }
