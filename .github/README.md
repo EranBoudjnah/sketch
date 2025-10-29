@@ -2,6 +2,8 @@
 
 # Sketch ✏️
 
+<video src="./assets/recording.mp4" alt="Preview" align="right"></video>
+
 A Jetpack Compose UI library of components with a hand-drawn, sketch-style appearance.
 
 Designed to bring playful, human touches to your Compose UIs while keeping them fully customizable and production-ready.
@@ -11,7 +13,8 @@ Designed to bring playful, human touches to your Compose UIs while keeping them 
 - [Key features](#key-features)
 - [Installation](#installation)
 - [Usage](#usage)
-    - [Example components](#example-components)
+    - [Composables](#composables)
+    - [Shapes](#shapes)
 - [Customization](#customization)
 - [Contributing](#contributing)
 - [Support](#support)
