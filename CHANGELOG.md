@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0]
+
+### Added
+- Hachure modifier (#9)
+
+### Changed
+- Polished demo app, documentation (#6, #7, #8)
+
 ## [0.2.0]
 
 ### Added
