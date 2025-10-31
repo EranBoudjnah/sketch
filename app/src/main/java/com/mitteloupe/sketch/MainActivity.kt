@@ -34,11 +34,17 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,6 +56,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -250,20 +257,52 @@ fun Demo(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun InputExamples() {
-    var text by remember { mutableStateOf("") }
-    val seed by remember(text) { mutableIntStateOf(Random.nextInt()) }
-    TextField(
-        value = text,
-        label = { Text("TextField example") },
-        onValueChange = { text = it },
-        seed = seed
-    )
+private fun InputExamples(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        var text by remember { mutableStateOf("") }
+        val seed by remember(text) { mutableIntStateOf(Random.nextInt()) }
+
+        val plainTooltipText = "TextField with hatch and underline"
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        TooltipBox(
+            modifier = modifier,
+            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                TooltipAnchorPosition.Below
+            ),
+            tooltip = {
+                PlainTooltip(
+                    shape = SketchRoundedCornerShape(8.dp)
+                ) { Text(plainTooltipText) }
+            },
+            state = rememberTooltipState()
+        ) {
+            TextField(
+                value = text,
+                label = { Text("TextField example") },
+                onValueChange = { text = it },
+                seed = seed,
+                colors = TextFieldDefaults.colors().copy(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                ),
+                modifier = Modifier
+                    .hachure(
+                        randomSeed = text.hashCode(),
+                        strokeThickness = 1.5.dp,
+                        gap = 3.0.dp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = .075f),
+                        shape = SketchRoundedCornerShape(8.dp).top(),
+                        style = Style.Hatch(135f)
+                    )
+            )
+        }
+    }
 }
 
 @Composable
-private fun ButtonExamples() {
-    Column {
+private fun ButtonExamples(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         Button(
             shape = SketchCapsuleShape(),
             modifier = Modifier
@@ -300,18 +339,32 @@ private fun ButtonExamples() {
 }
 
 @Composable
-private fun ToggleExamples() {
-    Column {
+private fun ToggleExamples(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             var checkboxChecked: Boolean by remember { mutableStateOf(false) }
             val checkboxSeed by remember(checkboxChecked) {
                 mutableIntStateOf(Random.nextInt())
             }
-            Checkbox(
-                checked = checkboxChecked,
-                onCheckedChange = { checkboxChecked = it },
-                seed = checkboxSeed
-            )
+            Box {
+                Box(
+                    modifier = Modifier
+                        .padding(14.dp)
+                        .hachure(
+                            strokeThickness = 1.5.dp,
+                            gap = 3.0.dp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = .075f),
+                            shape = SketchRoundedCornerShape(8.dp).top(),
+                            style = Style.Hatch(135f)
+                        )
+                        .size(20.dp)
+                )
+                Checkbox(
+                    checked = checkboxChecked,
+                    onCheckedChange = { checkboxChecked = it },
+                    seed = checkboxSeed
+                )
+            }
             Text("A sketchy Checkbox")
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -343,8 +396,8 @@ private fun ToggleExamples() {
 }
 
 @Composable
-private fun RangeExamples() {
-    Column {
+private fun RangeExamples(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         val interactionSource: MutableInteractionSource =
             remember { MutableInteractionSource() }
 
@@ -417,5 +470,37 @@ private fun RangeExamples() {
 fun DemoPreview() {
     SketchTheme {
         Demo(Modifier.wrapContentSize())
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun InputExamplesPreview() {
+    SketchTheme {
+        InputExamples(modifier = Modifier.padding(8.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ButtonExamplesPreview() {
+    SketchTheme {
+        ButtonExamples(modifier = Modifier.padding(8.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ToggleExamplesPreview() {
+    SketchTheme {
+        ToggleExamples(modifier = Modifier.padding(8.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RangeExamplesPreview() {
+    SketchTheme {
+        RangeExamples(modifier = Modifier.padding(8.dp))
     }
 }

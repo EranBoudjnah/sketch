@@ -15,6 +15,7 @@ https://github.com/user-attachments/assets/56c42ec7-4ed5-45e5-89ec-19d6a91edee9
 - [Usage](#usage)
     - [Composables](#composables)
     - [Shapes](#shapes)
+    - [Modifiers](#modifiers)
 - [Customization](#customization)
 - [Contributing](#contributing)
 - [Support](#support)
@@ -25,13 +26,13 @@ https://github.com/user-attachments/assets/56c42ec7-4ed5-45e5-89ec-19d6a91edee9
 
 ## Key features
 
-| Feature | Description |
-|----------|--------------|
-| ✏️ **Sketch look & feel** | Adds a hand-drawn, playful aesthetic to your Compose components. |
-| 🧩 **Composable components** | Works with all your standard Compose UI code. |
-| 🎨 **Customizable styles** | Control stroke width, color, randomness, and more. |
-| 💡 **Lightweight** | No dependencies beyond Jetpack Compose. |
-| 🧱 **Modular** | Import only what you need. |
+| Feature                      | Description                                                      |
+|------------------------------|------------------------------------------------------------------|
+| ✏️ **Sketch look & feel**    | Adds a hand-drawn, playful aesthetic to your Compose components. |
+| 🧩 **Composable components** | Works with all your standard Compose UI code.                    |
+| 🎨 **Customizable styles**   | Control stroke width, color, randomness, and more.               |
+| 💡 **Lightweight**           | No dependencies beyond Jetpack Compose.                          |
+| 🧱 **Modular**               | Import only what you need.                                       |
 
 ---
 
@@ -88,6 +89,12 @@ Useful for turning common composables sketchy.
 - `SketchCircleShape` — sketched circle
 - `SketchRectangleShape` — plain rectangle with sketchy edges
 - `SketchRoundedCornerShape` — sketched round-cornered rectangle
+
+### Modifiers
+
+Add a sketchy appearance to any composable.
+
+- `hachure` — hatch pattern background
 
 ---
 
